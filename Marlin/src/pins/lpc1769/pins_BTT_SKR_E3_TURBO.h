@@ -168,10 +168,11 @@
 // Heaters / Fans
 //
 #define HEATER_0_PIN                       P2_03  // EXTRUDER 0
-#define HEATER_1_PIN                       P2_04  // EXTRUDER 1
+//#define HEATER_1_PIN                       P2_04  // EXTRUDER 1
 #define HEATER_BED_PIN                     P2_05  // BED
-#define FAN_PIN                            P2_01
-#define FAN1_PIN                           P2_02
+#define FAN_PIN                            P2_01  // Part Cooling Fan
+#define FAN1_PIN                           P2_02  // Hot End Fan
+#define FAN2_PIN                           P2_04  // Case Fan
 
 /**
  *                  _____
