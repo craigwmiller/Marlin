@@ -48,7 +48,7 @@ extern "C" volatile uint32_t _millis;
 #include <CDCSerial.h>
 
 // i2c uses 8-bit shifted address
-#define I2C_ADDRESS(A) uint8_t((A) << 1)
+//#define I2C_ADDRESS(A) uint8_t((A) << 1)  //craig: commented out to attempt to fix I2C EEPROM error
 
 //
 // Default graphical display delays
