@@ -39,8 +39,8 @@ namespace ExtUI
   uint16_t idleThrottling = 0;
 
   #if HAS_PID_HEATING
-    uint16_t pid_hotendAutoTemp = 240;
-    uint16_t pid_bedAutoTemp = 60;
+    uint16_t pid_hotendAutoTemp = 150;
+    uint16_t pid_bedAutoTemp = 70;
   #endif
 
 void onStartup()
@@ -969,8 +969,6 @@ SERIAL_ECHOLN(PSTR("BeginSwitch"));
       {
         if (FanStatus) //turn on the fan
         {
-          SERIAL_ECHOLNPAIR("FAN0 value: ", FAN0 );
-
           setTargetFan_percent(100, FAN0);
           FanStatus = false;
           RTS_SndData(ExchangePageBase + 57, ExchangepageAddr); //exchange to 57 page, the fans on
@@ -990,7 +988,7 @@ SERIAL_ECHOLN(PSTR("BeginSwitch"));
         RTS_SndData(PREHEAT_1_TEMP_HOTEND, NozzlePreheat);
         RTS_SndData(PREHEAT_1_TEMP_BED, BedPreheat);
       }
-      else if (recdat.data[0] == 6) //ABS mode (PETG)
+      else if (recdat.data[0] == 6) //ABS mode
       {
         setTargetTemp_celsius(PREHEAT_2_TEMP_HOTEND, H0);
         setTargetTemp_celsius(PREHEAT_2_TEMP_BED, BED);
@@ -1003,7 +1001,7 @@ SERIAL_ECHOLN(PSTR("BeginSwitch"));
         //InforShowStatus = true;
         #if FAN_COUNT > 0
               for (uint8_t i = 0; i < FAN_COUNT; i++)
-                setTargetFan_percent(100, (fan_t)i);
+                setTargetFan_percent(0, (fan_t)i);
         #endif
         FanStatus = false;
         setTargetTemp_celsius(0.0, H0);
@@ -1463,7 +1461,7 @@ SERIAL_ECHOLN(PSTR("BeginSwitch"));
 
     case LanguageChoice:
 
-      //SERIAL_ECHOLNPAIR("\n ***recdat.data[0] =", recdat.data[0]);
+      SERIAL_ECHOLNPAIR("\n ***recdat.data[0] =", recdat.data[0]);
       /*if(recdat.data[0]==1) {
           settings.save();
         }
@@ -1471,7 +1469,7 @@ SERIAL_ECHOLN(PSTR("BeginSwitch"));
           injectCommands_P(PSTR("M300"));
         }*/
       // may at some point use language change screens to save eeprom explicitly
-      //SERIAL_ECHOLN("InLangChoice");
+      SERIAL_ECHOLN("InLangChoice");
       switch(recdat.data[0])
       {
         case 0: {
@@ -1484,20 +1482,8 @@ SERIAL_ECHOLN(PSTR("BeginSwitch"));
         }
         #if HAS_PID_HEATING
           case 2: {
-            //PID Tuning :: Hot End
-            SERIAL_ECHOLN("Starting FAN");
-            SERIAL_ECHOLNPAIR("FAN0 value: ", FAN0 );
-            setTargetFan_percent(100, FAN0);
-            FanStatus = false;
-            SERIAL_ECHOLN("Sleeping 3 seconds...");
-            delay_ms(3000);
-            SERIAL_ECHOLN("Sleeping DONE");
-            SERIAL_ECHOLN("Starting Hotend PID");
+            SERIAL_ECHOLN("Hotend PID");
             startPIDTune(pid_hotendAutoTemp, getActiveTool());
-            SERIAL_ECHOLN("Hotend PID Done");
-            SERIAL_ECHOLN("Stopping FAN");
-            setTargetFan_percent(0, FAN0);
-            FanStatus = true;
             break;
           }
         #endif
@@ -1513,11 +1499,8 @@ SERIAL_ECHOLN(PSTR("BeginSwitch"));
         }
         #if HAS_PID_HEATING
           case 5: {
-            //PID Tuning :: Bed
             #if ENABLED(PIDTEMPBED)
-              setTargetFan_percent(FanOn, FAN0);
               startBedPIDTune(pid_bedAutoTemp);
-              setTargetFan_percent(FanOff, FAN0);
             #else
               SERIAL_ECHOLN("Bed PID Disabled");
             #endif
@@ -1530,7 +1513,6 @@ SERIAL_ECHOLN(PSTR("BeginSwitch"));
           break;
         }
         default: {
-          SERIAL_ECHOLNPAIR("\n ***recdat.data[0] =", recdat.data[0]);
           SERIAL_ECHOLN("Invalid Option");
           break;
         }
@@ -1543,7 +1525,7 @@ SERIAL_ECHOLN(PSTR("BeginSwitch"));
       {
         if(
           #if (FIL_RUNOUT_STATE == LOW)
-            #define FIL_RUNOUT_INVERTING false
+            #define FIL_RUNOUT_INVERTING true
           #endif
         #if DISABLED(FILAMENT_RUNOUT_SENSOR) || ENABLED(FILAMENT_MOTION_SENSOR)
           true
@@ -1968,4 +1950,4 @@ void onConfigurationStoreRead(bool success)
 
 } // namespace ExtUI
 
-#endif // enabled EXTENSIBLE_UI
+#endif
