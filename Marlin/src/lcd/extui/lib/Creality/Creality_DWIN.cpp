@@ -1001,7 +1001,7 @@ SERIAL_ECHOLN(PSTR("BeginSwitch"));
         //InforShowStatus = true;
         #if FAN_COUNT > 0
               for (uint8_t i = 0; i < FAN_COUNT; i++)
-                setTargetFan_percent(0, (fan_t)i);
+                setTargetFan_percent(100, (fan_t)i);
         #endif
         FanStatus = false;
         setTargetTemp_celsius(0.0, H0);
