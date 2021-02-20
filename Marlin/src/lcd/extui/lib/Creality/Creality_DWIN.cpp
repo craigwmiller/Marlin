@@ -1481,9 +1481,8 @@ SERIAL_ECHOLN(PSTR("BeginSwitch"));
           break;
         }
         #if HAS_PID_HEATING
-          case 2: {
-            SERIAL_ECHOLN("Hotend PID");
-            startPIDTune(pid_hotendAutoTemp, getActiveTool());
+          case 2: { // PID Tuning :: Hot End
+            injectCommands_P(PSTR(USER_GCODE_2));
             break;
           }
         #endif
@@ -1498,9 +1497,9 @@ SERIAL_ECHOLN(PSTR("BeginSwitch"));
           break;
         }
         #if HAS_PID_HEATING
-          case 5: {
+          case 5: { // PID Tuning :: Bed
             #if ENABLED(PIDTEMPBED)
-              startBedPIDTune(pid_bedAutoTemp);
+              injectCommands_P(PSTR(USER_GCODE_3));
             #else
               SERIAL_ECHOLN("Bed PID Disabled");
             #endif
