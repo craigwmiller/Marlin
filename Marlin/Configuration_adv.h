@@ -3231,33 +3231,24 @@
 #if ENABLED(CUSTOM_USER_MENUS)
 
   #define UserBedTemp "60"
-  //#define UserHotEndTemp "245"
-  //#define UserCoolingFanSpeed "255"
-  //#define UserPIDCycles "8"
+  #define UserHotEndTemp "240"
+  #define UserCoolingFanSpeed "200"
+  #define UserPIDCycles "8"
 
-  #define CUSTOM_USER_MENU_TITLE "Leveling Tools"
+  //#define CUSTOM_USER_MENU_TITLE "Leveling Tools"
   //#define USER_SCRIPT_DONE "M117 User Script Done"
-  #define USER_SCRIPT_AUDIBLE_FEEDBACK
-  #define USER_SCRIPT_RETURN  // Return to status screen after a script
+  //#define USER_SCRIPT_AUDIBLE_FEEDBACK
+  //#define USER_SCRIPT_RETURN  // Return to status screen after a script
 
-  #define USER_DESC_1 "Setup"
+  #define USER_DESC_1 "Bed Auto Level"
   #define USER_GCODE_1 "M190S" UserBedTemp "\nG28\nG34I8\nG29\nM400\nM140S0\nG28\nM500\nM117 Finished Bed Level"
   
-  #define USER_DESC_2 "PID Tune"
-  #define USER_GCODE_2 "M117 USER GCODE 2"
-  //#define USER_GCODE_2 "M106S" UserCoolingFanSpeed "\nM303C" UserPIDCycles "S" UserHotEndTemp "E0U\nM500\nM117 PID Tune Done"
+  #define USER_DESC_2 "PID Tune - HotEnd"
+  #define USER_GCODE_2 "M106S" UserCoolingFanSpeed "\nG28\nM303C" UserPIDCycles "S" UserHotEndTemp "E0U\nM500\nM107\nM117 HotEnd PID Tune Done"
 
-  #define USER_DESC_3 "Prep for Z Adjust"
-  #define USER_GCODE_3 "M117 USER GCODE 3"
-  //#define USER_GCODE_3 "M190S" UserBedTemp "\nM104S" UserHotEndTemp "\nG28\nG29L1\nG1 X100Y100F5000\nG1Z0"
+  #define USER_DESC_3 "PID Tune - Bed"
+  #define USER_GCODE_3 "M106S" UserCoolingFanSpeed "\nG28\nM303C" UserPIDCycles "S" UserBedTemp "E-1U\nM500\nM107\nM117 Bed PID Tune Done"
 
-  #define USER_DESC_4 "Store Settings"
-  #define USER_GCODE_4 "M117 USER GCODE 4"
-  //#define USER_GCODE_4 "M500\nM117 Settings Stored"
-
-  #define USER_DESC_5 "Home & Info"
-  #define USER_GCODE_5 "M117 USER GCODE 5"
-  //#define USER_GCODE_5 "G28\nM503"
 #endif
 
 /**
