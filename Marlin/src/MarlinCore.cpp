@@ -870,6 +870,9 @@ inline void tmc_standby_setup() {
  *    • Max7219
  */
 void setup() {
+  #ifdef BOARD_PREINIT
+    BOARD_PREINIT(); // Low-level init (before serial init)
+  #endif
 
   tmc_standby_setup();  // TMC Low Power Standby pins must be set early or they're not usable
 
@@ -1010,11 +1013,6 @@ void setup() {
 
   // Some HAL need precise delay adjustment
   calibrate_delay_loop();
-
-  // Init buzzer pin(s)
-  #if USE_BEEPER
-    SETUP_RUN(buzzer.init());
-  #endif
 
   // Init buzzer pin(s)
   #if USE_BEEPER
