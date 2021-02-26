@@ -28,6 +28,10 @@
 #include "../../inc/MarlinConfig.h"
 #include "../shared/Delay.h"
 
+#ifdef USBCON
+  DefaultSerial MSerial(false, SerialUSB);
+#endif
+
 #if ENABLED(SRAM_EEPROM_EMULATION)
   #if STM32F7xx
     #include <stm32f7xx_ll_pwr.h>
@@ -36,6 +40,11 @@
   #else
     #error "SRAM_EEPROM_EMULATION is currently only supported for STM32F4xx and STM32F7xx"
   #endif
+#endif
+
+#if HAS_SD_HOST_DRIVE
+  #include "msc_sd.h"
+  #include "usbd_cdc_if.h"
 #endif
 
 // ------------------------
@@ -48,16 +57,7 @@ uint16_t HAL_adc_result;
 // Public functions
 // ------------------------
 
-// Needed for DELAY_NS() / DELAY_US() on CORTEX-M7
-#if (defined(__arm__) || defined(__thumb__)) && __CORTEX_M == 7
-  // HAL pre-initialization task
-  // Force the preinit function to run between the premain() and main() function
-  // of the STM32 arduino core
-  __attribute__((constructor (102)))
-  void HAL_preinit() {
-    enableCycleCounter();
-  }
-#endif
+TERN_(POSTMORTEM_DEBUGGING, extern void install_min_serial());
 
 // HAL initialization task
 void HAL_init() {
@@ -81,7 +81,24 @@ void HAL_init() {
 
   SetTimerInterruptPriorities();
 
-  TERN_(EMERGENCY_PARSER, USB_Hook_init());
+  #if ENABLED(EMERGENCY_PARSER) && USBD_USE_CDC
+    USB_Hook_init();
+  #endif
+
+  TERN_(POSTMORTEM_DEBUGGING, install_min_serial()); // Install the min serial handler
+
+  #if HAS_SD_HOST_DRIVE
+    MSC_SD_init();                         // Enable USB SD card access
+  #endif
+}
+
+// HAL idle task
+void HAL_idletask() {
+  #if HAS_SHARED_MEDIA
+    // Stm32duino currently doesn't have a "loop/idle" method
+    CDC_resume_receive();
+    CDC_continue_transmit();
+  #endif
 }
 
 void HAL_clear_reset_source() { __HAL_RCC_CLEAR_RESET_FLAGS(); }
@@ -128,8 +145,12 @@ uint16_t HAL_adc_get_result() { return HAL_adc_result; }
 void flashFirmware(const int16_t) { NVIC_SystemReset(); }
 
 // Maple Compatibility
+volatile uint32_t systick_uptime_millis = 0;
 systickCallback_t systick_user_callback;
 void systick_attach_callback(systickCallback_t cb) { systick_user_callback = cb; }
-void HAL_SYSTICK_Callback() { if (systick_user_callback) systick_user_callback(); }
+void HAL_SYSTICK_Callback() {
+  systick_uptime_millis++;
+  if (systick_user_callback) systick_user_callback();
+}
 
 #endif // ARDUINO_ARCH_STM32 && !STM32GENERIC
