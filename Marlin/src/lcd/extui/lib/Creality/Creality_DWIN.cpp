@@ -1784,7 +1784,7 @@ void onPrintTimerStopped()
 	PrinterStatusKey[0] = 0;
 	InforShowStatus = true;
 	TPShowStatus = false;
-	rtscheck.RTS_SndData(ExchangePageBase + 51, ExchangepageAddr);
+	//rtscheck.RTS_SndData(ExchangePageBase + 51, ExchangepageAddr);
 }
 
 void onFilamentRunout()
