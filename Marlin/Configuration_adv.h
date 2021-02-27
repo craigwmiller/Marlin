@@ -3369,13 +3369,13 @@
   #define UserPIDCycles "8"
 
   #define USER_DESC_1 "Bed Auto Level"
-  #define USER_GCODE_1 "M190S" UserBedTemp "\nG28\nG34I8\nG29\nM400\nM140S0\nG28\nM500\nM117 Finished Bed Level"
+  #define USER_GCODE_1 "M190S" UserBedTemp "\nG28\nG34I8\nG29\nM140S0\nM500"
   
   #define USER_DESC_2 "PID Tune - HotEnd"
-  #define USER_GCODE_2 "M106S" UserCoolingFanSpeed "\nG28\nM303C" UserPIDCycles "S" UserHotEndTemp "E0U\nM500\nM107\nM117 HotEnd PID Tune Done"
+  #define USER_GCODE_2 "M106S" UserCoolingFanSpeed "\nG28\nM303C" UserPIDCycles "S" UserHotEndTemp "E0U\nM500\nM107"
 
   #define USER_DESC_3 "PID Tune - Bed"
-  #define USER_GCODE_3 "M106S" UserCoolingFanSpeed "\nG28\nM303C" UserPIDCycles "S" UserBedTemp "E-1U\nM500\nM107\nM117 Bed PID Tune Done"
+  #define USER_GCODE_3 "M106S" UserCoolingFanSpeed "\nG28\nM303C" UserPIDCycles "S" UserBedTemp "E-1U\nM500\nM107"
 
 #endif
 
