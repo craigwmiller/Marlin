@@ -1048,13 +1048,13 @@
 #define PROBING_MARGIN 12
 
 // X and Y axis travel speed (mm/min) between probes
-#define XY_PROBE_SPEED 14000
+#define XY_PROBE_SPEED 15000
 
 // Feedrate (mm/min) for the first approach when double-probing (MULTIPLE_PROBING == 2)
-#define Z_PROBE_SPEED_FAST (24*60)
+#define Z_PROBE_SPEED_FAST (25*60)
 
 // Feedrate (mm/min) for the "accurate" probe of each point
-#define Z_PROBE_SPEED_SLOW (Z_PROBE_SPEED_FAST * 0.8)
+#define Z_PROBE_SPEED_SLOW (Z_PROBE_SPEED_FAST)
 
 /**
  * Probe Activation Switch
@@ -1092,7 +1092,7 @@
  * A total of 2 does fast/slow probes with a weighted average.
  * A total of 3 or more adds more slow probes, taking the average.
  */
-#define MULTIPLE_PROBING 2
+//#define MULTIPLE_PROBING 2
 //#define EXTRA_PROBING    1
 
 /**
